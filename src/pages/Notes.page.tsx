@@ -10,7 +10,7 @@ export function NotesPage() {
 
     const refresh = () => {
         const token = localStorage.getItem('token')
-        fetch('http://15.235.192.203:8080/api/notes', {
+        fetch('https://www.malubertanya.com/api/notes', {
             headers: {
                 'Content-Type': 'application/json',
                 ...(token && { 'Authorization': `Bearer ${token}` })
@@ -36,7 +36,7 @@ export function NotesPage() {
     }
 
     const onDelete = (id) => {
-        fetch(`http://15.235.192.203:8080/api/notes/${id}`, {
+        fetch(`https://www.malubertanya.com/api/notes/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ function NoteForm({ selectedNote, onComplete, onReset }) {
     }
 
     const onEdit = (id, title, content) => {
-        fetch(`http://15.235.192.203:8080/api/notes/${id}`, {
+        fetch(`https://www.malubertanya.com/api/notes/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ function NoteForm({ selectedNote, onComplete, onReset }) {
 
     const onSubmit = (e) => {
         e.preventDefault()
-        fetch('http://15.235.192.203:8080/api/notes', {
+        fetch('https://www.malubertanya.com/api/notes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

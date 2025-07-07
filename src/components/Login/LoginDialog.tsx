@@ -13,7 +13,7 @@ export function LoginDialog({ onSuccess }) {
 
     const onLogin = async () => {
         try {
-            const response = await fetch('http://15.235.192.203:8080/public/api/auth/login', {
+            const response = await fetch('https://www.malubertanya.com/public/api/auth/login', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
