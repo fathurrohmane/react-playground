@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, TextInput } from '@mantine/core';
+import { Button, Stack, TextInput } from '@mantine/core';
 import classes from './LoginDialog.module.css';
 
 export function LoginDialog({ onSuccess }) {
@@ -35,7 +35,7 @@ export function LoginDialog({ onSuccess }) {
     }
 
     return (
-        <div>
+        <Stack>
             <TextInput
                 label="Username"
                 placeholder="Username"
@@ -68,6 +68,6 @@ export function LoginDialog({ onSuccess }) {
             <Button onClick={onLogin}>
                 Login
             </Button>
-        </div>
+        </Stack>
     )
 }
