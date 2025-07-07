@@ -1,40 +1,28 @@
-import { Button, Card } from "@mantine/core"
-import { useState } from "react"
+import { ActionIcon, Card, Flex, Group, Text, Title } from "@mantine/core"
+import { IconEdit, IconTrash } from "@tabler/icons-react"
+import { useHover } from '@mantine/hooks';
 
-const NoteCard = ({ title, content, onEdit, onDelete }) => {
-    const [cTitle, setTitle] = useState(title)
-    const [cContent, setContent] = useState(content)
-    const [isEdit, setEdit] = useState(false)
+const NoteCard = ({ title, content, onEdit, onDelete, isEditing }) => {
+    const { hovered, ref } = useHover();
 
     return (
-        <Card withBorder padding="lg" radius="md" style={{
-            padding: "8px",
+        <Card ref={ref} withBorder padding="md" radius="md" style={{
             width: "200px",
-            gap: "4px",
-        }}>
-            {
-                isEdit ?
-                    <>
-                        <form style={{ display: 'flex', flexDirection: "column", width: "400px" }}>
-                            <input id='title' type="text" placeholder='Title' value={cTitle} onChange={(e) => setTitle(e.target.value)} />
-                            <input id='content' type="text" placeholder='Content' value={cContent} onChange={(e) => setContent(e.target.value)} />
-                        </form>
-                    </> :
-                    <>
-                        <h3>{title}</h3>
-                        <p>{content}</p>
-                        <Button variant="outline" onClick={onDelete}>Delete</Button>
-                    </>
-            }
+            height: '200px'
 
-            <Button onClick={() => {
-                if (isEdit) {
-                    onEdit(cTitle, cContent);
-                    setEdit(false);
-                } else {
-                    setEdit(true);
-                }
-            }}>{isEdit ? "Done" : "Edit"}</Button>
+        }} bg={isEditing ? 'blue' : 'white'}>
+            <Flex direction={'column'} style={{ height: '100%' }}>
+                <Title order={3}>{title}</Title>
+                <Text style={{ flexGrow: '1' }}>{content}</Text>
+                {(hovered || isEditing) && <Group style={{ alignSelf: 'flex-end' }}>
+                    <ActionIcon variant="outline" aria-label="Delete" onClick={onDelete}>
+                        <IconTrash />
+                    </ActionIcon>
+                    <ActionIcon variant="outline" aria-label="Edit" onClick={onEdit}>
+                        <IconEdit />
+                    </ActionIcon>
+                </Group>}
+            </Flex>
         </Card>
     )
 }

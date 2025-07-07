@@ -27,7 +27,7 @@ export function Welcome() {
         </Box>
       </div>
       <Title size={36} ta="center" mt={40}>
-        Welcome to <Mark>Fathurrohman Elkusnandi's</Mark> Playground
+        Welcome to <Mark color='red'>Fathurrohman Elkusnandi's</Mark> Playground
       </Title>
       <Center mt={20}>
         <Text style={{}}>Creating fullstack app for learning purposes. Click here to access <Anchor href="https://www.malubertanya.com/swagger-ui/index.html" target="_blank">

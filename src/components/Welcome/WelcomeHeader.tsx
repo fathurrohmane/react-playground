@@ -3,12 +3,8 @@ import { Burger, Container, Group, Modal, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './WelcomeHeader.module.css';
 import { LoginDialog } from '../Login/LoginDialog';
-import { useNavigate } from 'react-router-dom';
 
 const links = [
-    { link: '/notes', label: 'Notes' },
-    { link: '/short-url', label: 'Short URL' },
-    { link: '/admin', label: 'Admin' },
     { link: '/login', label: 'Login' },
 ];
 
@@ -16,8 +12,6 @@ export function WelcomeHeader() {
     const [opened, { toggle }] = useDisclosure(false);
     const [active, setActive] = useState(links[0].link);
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
-    const navigate = useNavigate()
-
 
     const items = links.map((link) => (
         <a
@@ -31,7 +25,6 @@ export function WelcomeHeader() {
                     setOpenLoginDialog(true)
                 } else {
                     setActive(link.link)
-                    navigate(link.link)
                 }
             }}
         >
@@ -51,7 +44,7 @@ export function WelcomeHeader() {
             </Modal>
             <header className={classes.header}>
                 <Container size="md" className={classes.inner}>
-                    <Title className={classes.title}>React Playground</Title>
+                    <Title className={classes.title}>Basic Note App</Title>
 
                     <Group gap={5} visibleFrom="xs">
                         {items}
