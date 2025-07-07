@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from "react-router";
 import NoteCard from '../components/Notes/NoteCard.jsx';
 import { Button, Card, Container, Flex, Stack, TextInput } from '@mantine/core';
 import { WelcomeHeader } from '@/components/Welcome/WelcomeHeader.js';
@@ -7,24 +6,24 @@ import { useClickOutside } from '@mantine/hooks';
 
 export function NotesPage() {
     const [notes, setNotes] = useState([])
-    const navigate = useNavigate()
     const [selectedNoteId, setSelectedNoteId] = useState(-1)
 
     const refresh = () => {
-        if (!localStorage.getItem("token")) {
-            navigate("/")
-            return
-        }
-
+        const token = localStorage.getItem('token')
         fetch('http://15.235.192.203:8080/api/notes', {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                ...(token && { 'Authorization': `Bearer ${token}` })
             }
         })
             .then((res) => {
-                console.log(res);
-                if (!res.ok) throw new Error('Network error');
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        throw new Error('Please login to access');
+                    } else {
+                        throw new Error('Network error');
+                    }
+                }
                 return res.json();
             })
             .then((data) => {
@@ -63,7 +62,9 @@ export function NotesPage() {
 
     return (
         <>
-            <WelcomeHeader />
+            <WelcomeHeader onRefresh={() => refresh()} onLogout={() => {
+                setNotes([])
+            }} />
             <NoteForm
                 selectedNote={notes.find(item => item.id == selectedNoteId)}
                 onComplete={() => {

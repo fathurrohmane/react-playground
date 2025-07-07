@@ -1,36 +1,14 @@
-import { useState } from 'react';
-import { Burger, Container, Group, Modal, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useState, useEffect } from 'react';
+import { Button, Container, Group, Modal, Title } from '@mantine/core';
 import classes from './WelcomeHeader.module.css';
 import { LoginDialog } from '../Login/LoginDialog';
 
-const links = [
-    { link: '/login', label: 'Login' },
-];
-
-export function WelcomeHeader() {
-    const [opened, { toggle }] = useDisclosure(false);
-    const [active, setActive] = useState(links[0].link);
+export function WelcomeHeader({ onRefresh, onLogout }) {
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
-    const items = links.map((link) => (
-        <a
-            key={link.label}
-            href={link.link}
-            className={classes.link}
-            data-active={active === link.link || undefined}
-            onClick={(event) => {
-                event.preventDefault();
-                if (link.link === "/login") {
-                    setOpenLoginDialog(true)
-                } else {
-                    setActive(link.link)
-                }
-            }}
-        >
-            {link.label}
-        </a>
-    ));
+    const onLogin = () => {
+        setOpenLoginDialog(true)
+    }
 
     return (
         <>
@@ -40,20 +18,43 @@ export function WelcomeHeader() {
                 title="Login"
                 centered
             >
-                <LoginDialog onSuccess={() => setOpenLoginDialog(false)} />
+                <LoginDialog onSuccess={() => {
+                    setOpenLoginDialog(false)
+                    onRefresh()
+                }} />
             </Modal>
             <header className={classes.header}>
                 <Container size="md" className={classes.inner}>
                     <Title className={classes.title}>Basic Note App</Title>
 
-                    <Group gap={5} visibleFrom="xs">
-                        {items}
+                    <Group gap={3}>
+                        <LoginButton onLogin={onLogin} onLogout={() => {
+                            localStorage.removeItem('token')
+                            onLogout()
+                        }} />
+
                     </Group>
 
-                    <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
                 </Container>
             </header>
         </>
 
     );
+}
+
+function LoginButton({ onLogin, onLogout }) {
+    const [isLoggedIn, setLoggedIn] = useState(false)
+
+    useEffect(() => {
+        const hasToken = localStorage.getItem('token') != null
+        setLoggedIn(hasToken)
+    })
+
+    return (
+        <Button onClick={() => {
+            if (isLoggedIn) { onLogout() } else { onLogin() }
+        }}>
+            {isLoggedIn ? 'Logout' : 'Login'}
+        </Button >
+    )
 }
