@@ -40,12 +40,8 @@ export function Welcome() {
             <AppCard title='Basic Note App' onClick={() => {
               navigate("/notes")
             }} canAccess />
-            <AppCard title='Short URL App' onClick={() => {
-              navigate("/notes")
-            }} />
-            <AppCard title='Shuttle Booking App' onClick={() => {
-              navigate("/notes")
-            }} />
+            <AppCard title='Short URL App' />
+            <AppCard title='Shuttle Booking App' />
           </Flex>
         </Center>
       </Container>
