@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Stack, TextInput } from '@mantine/core';
 import classes from './LoginDialog.module.css';
+import api from '../../api/api'
 
 export function LoginDialog({ onSuccess }) {
     const [usernameFocused, setUsernameFocused] = useState(false);
@@ -12,26 +13,15 @@ export function LoginDialog({ onSuccess }) {
     const passwordFloating = passwordValue.trim().length !== 0 || passwordFocused || undefined;
 
     const onLogin = async () => {
-        try {
-            const response = await fetch('https://www.malubertanya.com/public/api/auth/login', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    userName: usernameValue,
-                    password: passwordValue,
-                })
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
+        api.post('/public/api/auth/login', {
+            userName: usernameValue,
+            password: passwordValue,
+        }).then(data => {
             localStorage.setItem('token', data.data.token);
             onSuccess()
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        }).catch(err => {
+            throw new Error('Network response was not ok');
+        });
     }
 
     return (

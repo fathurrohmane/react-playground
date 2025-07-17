@@ -30,7 +30,7 @@ export function Welcome() {
         Welcome to <Mark color='red'>Fathurrohman Elkusnandi's</Mark> Playground
       </Title>
       <Center mt={20}>
-        <Text style={{}}>Creating fullstack app for learning purposes. Click here to access <Anchor href="https://www.malubertanya.com/swagger-ui/index.html" target="_blank">
+        <Text style={{}}>Creating fullstack app for learning purposes. Click here to access <Anchor href="https://api.malubertanya.com/swagger-ui/index.html" target="_blank">
           API documentation
         </Anchor></Text>
       </Center>

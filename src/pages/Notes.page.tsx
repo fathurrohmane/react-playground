@@ -3,49 +3,23 @@ import NoteCard from '../components/Notes/NoteCard.jsx';
 import { Button, Card, Container, Flex, Stack, TextInput } from '@mantine/core';
 import { WelcomeHeader } from '@/components/Welcome/WelcomeHeader.js';
 import { useClickOutside } from '@mantine/hooks';
+import api from '@/api/api.js';
 
 export function NotesPage() {
     const [notes, setNotes] = useState([])
     const [selectedNoteId, setSelectedNoteId] = useState(-1)
 
     const refresh = () => {
-        const token = localStorage.getItem('token')
-        fetch('https://www.malubertanya.com/api/notes', {
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token && { 'Authorization': `Bearer ${token}` })
-            }
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    if (res.status === 401) {
-                        throw new Error('Please login to access');
-                    } else {
-                        throw new Error('Network error');
-                    }
-                }
-                return res.json();
-            })
-            .then((data) => {
-                setNotes(data.data)
-            })
-            .catch((err) => {
-                console.log(err);
-                window.alert(err)
-            });
+        api.get('/api/notes').then(data => {
+            setNotes(data.data)
+        }).catch((err) => {
+            console.log(err);
+            window.alert(err)
+        });
     }
 
     const onDelete = (id) => {
-        fetch(`https://www.malubertanya.com/api/notes/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            }
-        }).then((res) => {
-            if (!res.ok) throw new Error('Network error');
-            return res.json();
-        })
+        api.delete(`/api/notes/${id}`)
             .then(() => {
                 refresh()
             })
@@ -106,47 +80,23 @@ function NoteForm({ selectedNote, onComplete, onReset }) {
     }
 
     const onEdit = (id, title, content) => {
-        fetch(`https://www.malubertanya.com/api/notes/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify({
-                title: title,
-                content: content
-            })
-        }).then((res) => {
-            if (!res.ok) throw new Error('Network error');
-            return res.json();
-        })
-            .then(() => {
-                onComplete()
-            })
-            .catch((err) => window.alert(err));
+        api.put(`/api/notes/${id}`, {
+            title: title,
+            content: content
+        }).then(() => {
+            onComplete()
+        }).catch((err) => window.alert(err));
     }
 
     const onSubmit = (e) => {
         e.preventDefault()
-        fetch('https://www.malubertanya.com/api/notes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify({
-                title: title,
-                content: content
-            })
-        }).then((res) => {
-            if (!res.ok) throw new Error('Network error');
-            return res.json();
-        })
-            .then((data) => {
-                reset()
-                onComplete()
-            })
-            .catch((err) => window.alert(err));
+        api.post('/api/notes', {
+            title: title,
+            content: content
+        }).then((data) => {
+            reset()
+            onComplete()
+        }).catch((err) => window.alert(err));
     }
 
     return (
