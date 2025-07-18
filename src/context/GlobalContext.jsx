@@ -11,7 +11,7 @@ export const GlobalContextProvider = ({ children }) => {
         if (token) {
             console.log("Token found");
         } else {
-            console.log("No token"); s
+            console.log("No token");
         }
     }, [token]);
 
