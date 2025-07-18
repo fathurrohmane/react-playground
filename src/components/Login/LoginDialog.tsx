@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Stack, TextInput } from '@mantine/core';
+import { Alert, Button, Stack, TextInput } from '@mantine/core';
 import classes from './LoginDialog.module.css';
 import api from '../../api/api'
 
@@ -12,7 +12,10 @@ export function LoginDialog({ onSuccess }) {
     const [passwordValue, setPasswordValue] = useState('');
     const passwordFloating = passwordValue.trim().length !== 0 || passwordFocused || undefined;
 
+    const [errorMessage, setErrorMessage] = useState("")
+
     const onLogin = async () => {
+        setErrorMessage("")
         api.post('/public/api/auth/login', {
             userName: usernameValue,
             password: passwordValue,
@@ -20,12 +23,16 @@ export function LoginDialog({ onSuccess }) {
             localStorage.setItem('token', data.data.token);
             onSuccess()
         }).catch(err => {
-            throw new Error('Network response was not ok');
+            setErrorMessage(err.message)
         });
     }
 
     return (
         <Stack>
+            {errorMessage && <Alert variant="light" color="red">
+                {errorMessage}
+            </Alert>}
+
             <TextInput
                 label="Username"
                 placeholder="Username"
