@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import NoteCard from '../components/Notes/NoteCard.jsx';
+import NoteCard from '../../components/Notes/NoteCard.jsx';
 import { Button, Card, Container, Flex, Notification, Stack, TextInput } from '@mantine/core';
 import { WelcomeHeader } from '@/components/Welcome/WelcomeHeader.js';
 import { useClickOutside, useTimeout } from '@mantine/hooks';
@@ -41,7 +41,7 @@ export function NotesPage() {
         refresh()
     }, [])
 
-    const editNote = (noteId: Number) => {
+    const editNote = (noteId: number) => {
         setSelectedNoteId(noteId)
     }
 
