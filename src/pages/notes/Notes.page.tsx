@@ -6,12 +6,14 @@ import { useEffect, useState } from 'react';
 import NoteCard from './components/NoteCard';
 import NoteForm from "./components/NoteForm";
 import Note from '@/types/Note';
+import NoteDialog from './components/NoteDialog';
 
 export function NotesPage() {
     const [notes, setNotes] = useState<Note[]>([])
     const [selectedNoteId, setSelectedNoteId] = useState(-1)
     const [errorMessage, setErrorMessage] = useState("")
     const { start, clear } = useTimeout(() => setErrorMessage(""), 7000);
+    const [openNoteDialog, setOpenNoteDialog] = useState(false)
 
     const showError = (errorMessage: string) => {
         start()
@@ -45,22 +47,30 @@ export function NotesPage() {
 
     const editNote = (noteId: number) => {
         setSelectedNoteId(noteId)
+        setOpenNoteDialog(true)
+    }
+
+    const onDialogClose = (updateNote: Note) => {
+        const updatedNotes = notes.map(item => item.id === updateNote.id ? { ...updateNote } : item)
+        setNotes(updatedNotes)
+        setOpenNoteDialog(false)
+        setSelectedNoteId(-1)
     }
 
     return (
         <>
+            {openNoteDialog && <NoteDialog note={notes.find(item => item.id === selectedNoteId)} open={openNoteDialog} onClose={onDialogClose} showError={showError} />}
             <WelcomeHeader onRefresh={() => refresh()} onLogout={() => {
                 setNotes([])
             }} />
 
             <NoteForm
-                selectedNote={notes.find(item => item.id === selectedNoteId)}
                 onComplete={() => {
                     setSelectedNoteId(-1)
                     refresh()
                 }}
                 onReset={() => setSelectedNoteId(-1)}
-                showError={(errorMessage: string) => showError(errorMessage)} />
+                showError={showError} />
 
             <Container mt={20}>
                 <Flex gap={8} wrap='wrap'>

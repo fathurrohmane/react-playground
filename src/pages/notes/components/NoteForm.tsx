@@ -1,43 +1,29 @@
 import api from '@/api/api.js';
 import { Button, Card, Container, Flex, Stack, TextInput } from '@mantine/core';
 import { useClickOutside } from '@mantine/hooks';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface NoteFormProps {
-    selectedNote: any,
     onComplete: () => void,
     onReset: () => void,
     showError: (errorMessage: string) => void
 }
 
-function NoteForm({ selectedNote, onComplete, onReset, showError }: NoteFormProps) {
+function NoteForm({ onComplete, onReset, showError }: NoteFormProps) {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [onFocus, setOnFocus] = useState(false)
     const ref = useClickOutside(() => {
-        reset()
+        if (onFocus) {
+            reset()
+        }
     });
-
-    useEffect(() => {
-        setTitle(selectedNote?.title ?? '');
-        setContent(selectedNote?.content ?? '');
-        setOnFocus(selectedNote != null);
-    }, [selectedNote]);
 
     const reset = () => {
         setTitle('')
         setContent('')
         setOnFocus(false)
         onReset()
-    }
-
-    const onEdit = (id: number, title: string, content: string) => {
-        api.put(`/api/notes/${id}`, {
-            title,
-            content
-        }).then(() => {
-            onComplete()
-        }).catch((err) => showError(err.message));
     }
 
     const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -74,7 +60,7 @@ function NoteForm({ selectedNote, onComplete, onReset, showError }: NoteFormProp
                         }} variant='subtle'>
                             Cancel
                         </Button>
-                        <Button onClick={(e) => { if (selectedNote) { onEdit(selectedNote.id, title, content) } else { onSubmit(e) } }} variant='subtle' >
+                        <Button onClick={(e) => { onSubmit(e) }} variant='subtle' >
                             Save
                         </Button>
                     </Flex>}
