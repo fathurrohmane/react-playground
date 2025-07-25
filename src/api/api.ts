@@ -5,7 +5,7 @@ function getAuthToken() {
     return localStorage.getItem('token');
 }
 
-async function handleResponse(response) {
+async function handleResponse(response: Response) {
     const contentType = response.headers.get('Content-Type') || '';
 
     if (!response.ok) {
@@ -15,7 +15,9 @@ async function handleResponse(response) {
         throw new Error(errorData.message || 'API Error');
     }
 
-    if (response.status === 204) return null; // No Content
+    if (response.status === 204) {
+        return null; // No Content
+    }
     if (contentType.includes('application/json')) {
         return response.json();
     }
@@ -23,7 +25,7 @@ async function handleResponse(response) {
 }
 
 const api = {
-    get: async (url, options = {}) => {
+    get: async (url: string, options: any = {}) => {
         const token = getAuthToken();
         return fetch(BASE_URL + url, {
             method: 'GET',
@@ -35,7 +37,7 @@ const api = {
         }).then(handleResponse);
     },
 
-    post: async (url, data, options = {}) => {
+    post: async (url: string, data: any, options: any = {}) => {
         const token = getAuthToken();
         return fetch(BASE_URL + url, {
             method: 'POST',
@@ -49,7 +51,7 @@ const api = {
         }).then(handleResponse);
     },
 
-    put: async (url, data, options = {}) => {
+    put: async (url: string, data: any, options: any = {}) => {
         const token = getAuthToken();
         return fetch(BASE_URL + url, {
             method: 'PUT',
@@ -63,7 +65,7 @@ const api = {
         }).then(handleResponse);
     },
 
-    delete: async (url, options = {}) => {
+    delete: async (url: string, options: any = {}) => {
         const token = getAuthToken();
         return fetch(BASE_URL + url, {
             method: 'DELETE',
