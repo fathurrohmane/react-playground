@@ -1,8 +1,12 @@
-import { useContext, createContext, useState, useEffect } from "react";
+import { useContext, createContext, useState, useEffect, ReactNode } from "react";
 
-const GlobalContext = createContext();
+const GlobalContext = createContext({});
 
-export const GlobalContextProvider = ({ children }) => {
+interface GlobalProviderProps {
+    children: ReactNode;
+}
+
+export const GlobalContextProvider = ({ children }: GlobalProviderProps) => {
     const getToken = localStorage.getItem("token");
 
     const [token, setToken] = useState(getToken);

@@ -1,9 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Button, Container, Group, Modal, Title } from '@mantine/core';
+import { useState } from 'react';
+import { Container, Group, Modal, Title } from '@mantine/core';
 import classes from './WelcomeHeader.module.css';
-import { LoginDialog } from '../Login/LoginDialog';
+import { LoginDialog } from './LoginDialog';
+import LoginButton from './LoginButton';
 
-export function WelcomeHeader({ onRefresh, onLogout }) {
+interface WelcomeHeaderProps {
+    onRefresh: () => void,
+    onLogout: () => void,
+}
+
+export function WelcomeHeader({ onRefresh, onLogout }: WelcomeHeaderProps) {
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
     const onLogin = () => {
@@ -16,8 +22,7 @@ export function WelcomeHeader({ onRefresh, onLogout }) {
                 opened={openLoginDialog}
                 onClose={() => setOpenLoginDialog(false)}
                 title="Login"
-                centered
-            >
+                centered >
                 <LoginDialog onSuccess={() => {
                     setOpenLoginDialog(false)
                     onRefresh()
@@ -26,35 +31,15 @@ export function WelcomeHeader({ onRefresh, onLogout }) {
             <header className={classes.header}>
                 <Container size="md" className={classes.inner}>
                     <Title className={classes.title}>Basic Note App</Title>
-
                     <Group gap={3}>
                         <LoginButton onLogin={onLogin} onLogout={() => {
                             localStorage.removeItem('token')
                             onLogout()
                         }} />
-
                     </Group>
-
                 </Container>
             </header>
         </>
-
     );
 }
 
-function LoginButton({ onLogin, onLogout }) {
-    const [isLoggedIn, setLoggedIn] = useState(false)
-
-    useEffect(() => {
-        const hasToken = localStorage.getItem('token') != null
-        setLoggedIn(hasToken)
-    })
-
-    return (
-        <Button onClick={() => {
-            if (isLoggedIn) { onLogout() } else { onLogin() }
-        }}>
-            {isLoggedIn ? 'Logout' : 'Login'}
-        </Button >
-    )
-}

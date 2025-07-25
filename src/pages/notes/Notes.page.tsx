@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
-import NoteCard from '../../components/Notes/NoteCard.jsx';
-import { Button, Card, Container, Flex, Notification, Stack, TextInput } from '@mantine/core';
-import { WelcomeHeader } from '@/components/Welcome/WelcomeHeader.js';
-import { useClickOutside, useTimeout } from '@mantine/hooks';
 import api from '@/api/api.js';
+import { WelcomeHeader } from '@/pages/notes/components/WelcomeHeader.js';
+import { Container, Flex, Notification } from '@mantine/core';
+import { useTimeout } from '@mantine/hooks';
+import { useEffect, useState } from 'react';
+import NoteCard from './components/NoteCard';
+import NoteForm from "./components/NoteForm";
+import Note from '@/types/Note';
 
 export function NotesPage() {
-    const [notes, setNotes] = useState([])
+    const [notes, setNotes] = useState<Note[]>([])
     const [selectedNoteId, setSelectedNoteId] = useState(-1)
     const [errorMessage, setErrorMessage] = useState("")
     const { start, clear } = useTimeout(() => setErrorMessage(""), 7000);
@@ -29,7 +31,7 @@ export function NotesPage() {
         });
     }
 
-    const onDelete = (id) => {
+    const onDelete = (id: number) => {
         api.delete(`/api/notes/${id}`)
             .then(() => {
                 refresh()
@@ -75,79 +77,5 @@ export function NotesPage() {
                 </Notification>
             }
         </>
-    )
-}
-
-function NoteForm({ selectedNote, onComplete, onReset, showError }) {
-    const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
-    const [onFocus, setOnFocus] = useState(false)
-    const ref = useClickOutside(() => {
-        reset()
-    });
-
-    useEffect(() => {
-        setTitle(selectedNote?.title ?? '');
-        setContent(selectedNote?.content ?? '');
-        setOnFocus(selectedNote != null);
-    }, [selectedNote]);
-
-    const reset = () => {
-        setTitle('')
-        setContent('')
-        setOnFocus(false)
-        onReset()
-    }
-
-    const onEdit = (id, title, content) => {
-        api.put(`/api/notes/${id}`, {
-            title: title,
-            content: content
-        }).then(() => {
-            onComplete()
-        }).catch((err) => showError(err.message));
-    }
-
-    const onSubmit = (e) => {
-        e.preventDefault()
-        api.post('/api/notes', {
-            title,
-            content
-        }).then((data) => {
-            reset()
-            onComplete()
-        }).catch((err) => showError(err.message));
-    }
-
-    return (
-        <Container ref={ref}>
-            <Card withBorder radius='md' mt={20}>
-                <Stack>
-                    {onFocus && <TextInput
-                        variant="unstyled"
-                        placeholder="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />}
-
-                    <TextInput
-                        variant="unstyled"
-                        placeholder="Write your note here..."
-                        onFocus={() => setOnFocus(true)}
-                        value={content} onChange={(e) => setContent(e.target.value)}
-                    />
-                    {onFocus && <Flex style={{ alignSelf: 'flex-end' }}>
-                        <Button onClick={() => {
-                            reset()
-                        }} variant='subtle'>
-                            Cancel
-                        </Button>
-                        <Button onClick={(e) => { if (selectedNote) { onEdit(selectedNote.id, title, content) } else { onSubmit(e) } }} variant='subtle' >
-                            Save
-                        </Button>
-                    </Flex>}
-                </Stack>
-            </Card>
-        </Container >
     )
 }

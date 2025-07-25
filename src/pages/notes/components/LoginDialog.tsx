@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { Alert, Button, Stack, TextInput } from '@mantine/core';
 import classes from './LoginDialog.module.css';
-import api from '../../api/api'
+import api from '../../../api/api'
 
-export function LoginDialog({ onSuccess }) {
+interface LoginDialogProps {
+    onSuccess: () => void
+}
+
+export function LoginDialog({ onSuccess }: LoginDialogProps) {
     const [usernameFocused, setUsernameFocused] = useState(false);
     const [usernameValue, setUsernameValue] = useState('');
     const usernameFloating = usernameValue.trim().length !== 0 || usernameFocused || undefined;
